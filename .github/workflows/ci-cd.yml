@@ -1,0 +1,28 @@
+name: DevOps CI-CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository Code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: actions/setup-buildx-action@v3
+
+    - name: Build Docker Image Locally
+      run: |
+        docker build -t my-web-server:latest .
+        echo "Docker Image Built Successfully!"
+
+    - name: Test Docker Container Run
+      run: |
+        docker run -d -p 8080:80 --name test-container my-web-server:latest
+        sleep 5
+        curl http://localhost:8080
+        docker stop test-container
